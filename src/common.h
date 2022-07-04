@@ -27,6 +27,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include <stdint.h>
 #include <limits.h>
 #include <../d1_mini/pins_arduino.h>
 
@@ -101,30 +102,11 @@ namespace PIN
 #define DEBUG_MSG(...)
 #endif
 
-// time delta with overflow support
-static unsigned long timeDiff(unsigned long newTime, unsigned long oldTime)
+class DIFF
 {
-  if (newTime >= oldTime)
-  {
-    return newTime - oldTime;
-  }
-  else
-  {
-    return ULONG_MAX - oldTime + newTime + 1;
-  }
-}
-
-// unsigned int delta with overflow support
-static unsigned long diff(unsigned int newVal, unsigned int oldVal)
-{
-  if (newVal >= oldVal)
-  {
-    return newVal - oldVal;
-  }
-  else
-  {
-    return UINT_MAX - oldVal + newVal + 1;
-  }
-}
+public:
+  static unsigned long timeDiff(unsigned long newTime, unsigned long oldTime);
+  static unsigned long diff(unsigned int newVal, unsigned int oldVal);
+};
 
 #endif /* COMMON_H */

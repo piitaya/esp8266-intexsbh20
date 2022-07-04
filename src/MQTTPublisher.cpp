@@ -109,12 +109,12 @@ void MQTTPublisher::publishTemp(const char *topic, float t)
 void MQTTPublisher::loop()
 {
   unsigned long now = millis();
-  if (timeDiff(now, poolUpdateTime) >= CONFIG::POOL_UPDATE_PERIOD)
+  if (DIFF::timeDiff(now, poolUpdateTime) >= CONFIG::POOL_UPDATE_PERIOD)
   {
     poolUpdateTime = now;
 
     bool forcedStateUpdate = false;
-    if (timeDiff(now, poolStateUpdateTime) >= CONFIG::FORCED_STATE_UPDATE_PERIOD)
+    if (DIFF::timeDiff(now, poolStateUpdateTime) >= CONFIG::FORCED_STATE_UPDATE_PERIOD)
     {
       poolStateUpdateTime = now;
       forcedStateUpdate = true;
@@ -156,7 +156,7 @@ void MQTTPublisher::loop()
     }
 
     // update WiFi controller temperature and RSSI
-    if (timeDiff(now, wifiStateUpdateTime) >= CONFIG::WIFI_UPDATE_PERIOD)
+    if (DIFF::timeDiff(now, wifiStateUpdateTime) >= CONFIG::WIFI_UPDATE_PERIOD)
     {
       wifiStateUpdateTime = now;
 
