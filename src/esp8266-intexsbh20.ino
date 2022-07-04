@@ -115,7 +115,7 @@ void setup()
 
       ready = true;
     }
-    catch (std::runtime_error re)
+    catch (std::runtime_error const &re)
     {
       Serial.println(re.what());
     }

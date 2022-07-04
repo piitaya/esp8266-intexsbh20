@@ -126,7 +126,7 @@ void MQTTPublisher::loop()
       publishIfDefined(MQTT_TOPIC::FILTER, poolIO.isFilterOn(), SBH20IO::UNDEF::BOOL);
       publishIfDefined(MQTT_TOPIC::POWER, poolIO.isPowerOn(), SBH20IO::UNDEF::BOOL);
 
-      bool b = poolIO.isHeaterOn();
+      uint8_t b = poolIO.isHeaterOn();
       if (b != SBH20IO::UNDEF::BOOL)
       {
         mqttClient.publish(MQTT_TOPIC::HEATER, b ? (poolIO.isHeaterStandby() ? "standby" : "on") : "off", retainAll);
