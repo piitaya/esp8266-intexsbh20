@@ -49,17 +49,14 @@
  */
 
 #include "NTCThermometer.h"
-#include "OTAUpdate.h"
 #include "SBH20IO.h"
 #include "ConfigurationFile.h"
 #include "MQTTClient.h"
 #include "MQTTPublisher.h"
 #include "common.h"
 
-
 ConfigurationFile config;
 NTCThermometer thermometer;
-OTAUpdate otaUpdate;
 
 SBH20IO poolIO;
 
@@ -67,9 +64,7 @@ MQTTClient mqttClient;
 MQTTPublisher mqttPublisher(mqttClient, poolIO, thermometer);
 
 unsigned long disconnectTime = 0;
-LANG language = LANG::CODE;
 bool initialized = false;
-
 
 /**
  *  Arduino setup function
@@ -94,31 +89,26 @@ void setup()
       WiFi.begin(config.get(CONFIG_TAG::WIFI_SSID), config.get(CONFIG_TAG::WIFI_PASSPHRASE));
 
       // init MQTT
-      bool retainAll = config.exists(CONFIG_TAG::MQTT_RETAIN)? strcmp(config.get(CONFIG_TAG::MQTT_RETAIN), "no") != 0 : false;
+      bool retainAll = config.exists(CONFIG_TAG::MQTT_RETAIN) ? strcmp(config.get(CONFIG_TAG::MQTT_RETAIN), "no") != 0 : false;
       mqttPublisher.setRetainAll(retainAll);
-      
+
       mqttClient.addMetadata(MQTT_TOPIC::MODEL, CONFIG::POOL_MODEL_NAME);
       mqttClient.addMetadata(MQTT_TOPIC::VERSION, CONFIG::WIFI_VERSION);
-      mqttClient.addSubscriber(MQTT_TOPIC::CMD_BUBBLE, [](bool b) -> void { poolIO.setBubbleOn(b); });
-      mqttClient.addSubscriber(MQTT_TOPIC::CMD_FILTER, [](bool b) -> void { poolIO.setFilterOn(b); });
-      mqttClient.addSubscriber(MQTT_TOPIC::CMD_HEATER, [](bool b) -> void { poolIO.setHeaterOn(b); });
-      mqttClient.addSubscriber(MQTT_TOPIC::CMD_POWER,  [](bool b) -> void { poolIO.setPowerOn(b); });
-      mqttClient.addSubscriber(MQTT_TOPIC::CMD_WATER,  [](int i) -> void { poolIO.setDesiredWaterTempCelsius(i); });
-      if (config.exists(CONFIG_TAG::WIFI_OTA_URL))
-      {
-        // enable OTA update if URL is defined in config
-        mqttClient.addSubscriber(MQTT_TOPIC::CMD_OTA,  [](bool b) -> void { if (b) otaUpdate.start(config.get(CONFIG_TAG::WIFI_OTA_URL), mqttClient); });
-      }
-      if (config.exists(CONFIG_TAG::MQTT_ERROR_LANG))
-      {
-        // set language of error message if defined in config
-        String lang = config.get(CONFIG_TAG::MQTT_ERROR_LANG);
-        language = lang == "EN"? LANG::EN : (lang == "DE"? LANG::DE : LANG::CODE);
-      }
+      mqttClient.addSubscriber(MQTT_TOPIC::CMD_BUBBLE, [](bool b) -> void
+                               { poolIO.setBubbleOn(b); });
+      mqttClient.addSubscriber(MQTT_TOPIC::CMD_FILTER, [](bool b) -> void
+                               { poolIO.setFilterOn(b); });
+      mqttClient.addSubscriber(MQTT_TOPIC::CMD_HEATER, [](bool b) -> void
+                               { poolIO.setHeaterOn(b); });
+      mqttClient.addSubscriber(MQTT_TOPIC::CMD_POWER, [](bool b) -> void
+                               { poolIO.setPowerOn(b); });
+      mqttClient.addSubscriber(MQTT_TOPIC::CMD_WATER, [](int i) -> void
+                               { poolIO.setDesiredWaterTempCelsius(i); });
+
       mqttClient.setup(config.get(CONFIG_TAG::MQTT_SERVER), config.get(CONFIG_TAG::MQTT_USER), config.get(CONFIG_TAG::MQTT_PASSWORD), CONFIG::POOL_MODEL_NAME, MQTT_TOPIC::STATE, "offline");
 
       // init NTC thermometer
-      thermometer.setup(22000, 3.33f, 320.f/100.f); // measured: 21990, 3.327f, 319.f/99.6f
+      thermometer.setup(22000, 3.33f, 320.f / 100.f); // measured: 21990, 3.327f, 319.f/99.6f
 
       // enable hardware watchdog (8.3 s) by disabling software watchdog
       ESP.wdtDisable();
@@ -159,7 +149,7 @@ void loop()
       mqttClient.addMetadata(MQTT_TOPIC::IP, WiFi.localIP().toString().c_str());
 
       // init whirlpool I/O after first WiFi connect
-      poolIO.setup(language);
+      poolIO.setup();
       initialized = true;
     }
     else
@@ -183,7 +173,7 @@ void loop()
       // WiFi disconnected
       disconnectTime = now;
     }
-    else if (timeDiff(now, disconnectTime) > CONFIG::WIFI_MAX_DISCONNECT_DURATION)
+    else if (DIFF::timeDiff(now, disconnectTime) > CONFIG::WIFI_MAX_DISCONNECT_DURATION)
     {
       // WiFi disconnected too long, restart ESP
       DEBUG_MSG("restarting ... (no WiFi connection for several minutes)\n");

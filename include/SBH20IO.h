@@ -29,10 +29,9 @@
 #ifndef SBH20IO_H
 #define SBH20IO_H
 
-#include <c_types.h>
+#include <stdint.h>
 #include <WString.h>
 #include "common.h"
-
 
 /**
  * The Intex serial protocol between the mainboard of the SB-H20 model and its
@@ -133,8 +132,8 @@ public:
   class UNDEF
   {
   public:
-    static const uint8 BOOL     = 0xFF;
-    static const uint16 USHORT = 0xFFFF;
+    static const uint8_t BOOL = 0xFF;
+    static const uint16_t USHORT = 0xFFFF;
   };
 
   class WATER_TEMP
@@ -145,7 +144,7 @@ public:
   };
 
 public:
-  void setup(LANG language);
+  void setup();
   void loop();
 
 public:
@@ -154,12 +153,12 @@ public:
   int getActWaterTempCelsius() const;
   int getDesiredWaterTempCelsius() const;
 
-  uint8 isBubbleOn() const;
-  uint8 isFilterOn() const;
-  uint8 isHeaterOn() const;
-  uint8 isHeaterStandby() const;
-  uint8 isPowerOn() const;
-  uint8 isBuzzerOn() const;
+  uint8_t isBubbleOn() const;
+  uint8_t isFilterOn() const;
+  uint8_t isHeaterOn() const;
+  uint8_t isHeaterStandby() const;
+  uint8_t isPowerOn() const;
+  uint8_t isBuzzerOn() const;
 
   void setDesiredWaterTempCelsius(int temp);
 
@@ -177,57 +176,56 @@ public:
   unsigned int getDroppedFrames() const;
 
 private:
-
   class CYCLE
   {
   public:
-    static const unsigned int TOTAL_FRAMES    = 32; // number of frames in each cycle
-    static const unsigned int DISPLAY_FRAMES  = 5;  // number of digit frame groups in each cycle
-    static const unsigned int PERIOD          = 21; // ms, period of frame cycle
-    static const unsigned int RECEIVE_TIMEOUT = 50*CYCLE::PERIOD; // ms
+    static const unsigned int TOTAL_FRAMES = 32;                    // number of frames in each cycle
+    static const unsigned int DISPLAY_FRAMES = 5;                   // number of digit frame groups in each cycle
+    static const unsigned int PERIOD = 21;                          // ms, period of frame cycle
+    static const unsigned int RECEIVE_TIMEOUT = 50 * CYCLE::PERIOD; // ms
   };
 
   class FRAME
   {
-  public  :
+  public:
     static const unsigned int BITS = 16;
-    static const unsigned int FREQUENCY = CYCLE::TOTAL_FRAMES/CYCLE::PERIOD; // frames/ms
+    static const unsigned int FREQUENCY = CYCLE::TOTAL_FRAMES / CYCLE::PERIOD; // frames/ms
   };
 
   class BLINK
   {
   public:
-    static const unsigned int PERIOD         = 500; // ms, temp will blink 8 times in 4000 ms
-    static const unsigned int TEMP_FRAMES    = PERIOD/4*FRAME::FREQUENCY; // sample duration of desired temp after blank display
-    static const unsigned int STOPPED_FRAMES = 2*PERIOD*FRAME::FREQUENCY; // must be longer than single blink duration
+    static const unsigned int PERIOD = 500;                                   // ms, temp will blink 8 times in 4000 ms
+    static const unsigned int TEMP_FRAMES = PERIOD / 4 * FRAME::FREQUENCY;    // sample duration of desired temp after blank display
+    static const unsigned int STOPPED_FRAMES = 2 * PERIOD * FRAME::FREQUENCY; // must be longer than single blink duration
   };
 
   class CONFIRM_FRAMES
   {
   public:
-    static const unsigned int LED            = 3;
-    static const unsigned int DISP           = 3;
+    static const unsigned int LED = 3;
+    static const unsigned int DISP = 3;
     static const unsigned int WATER_TEMP_SET = 3;
-    static const unsigned int WATER_TEMP_ACT = BLINK::PERIOD/2*FRAME::FREQUENCY/CYCLE::DISPLAY_FRAMES; // ms, must be high enough to tell from blinking
+    static const unsigned int WATER_TEMP_ACT = BLINK::PERIOD / 2 * FRAME::FREQUENCY / CYCLE::DISPLAY_FRAMES; // ms, must be high enough to tell from blinking
   };
 
   class BUTTON
   {
   public:
-    static const unsigned int PRESS_COUNT       = BLINK::PERIOD/CYCLE::PERIOD - 2; // must be long enough to trigger, but short enough to avoid double trigger
-    static const unsigned int ACK_CHECK_PERIOD  = 10; // ms
-    static const unsigned int ACK_TIMEOUT       = 2*PRESS_COUNT*CYCLE::PERIOD; // ms
+    static const unsigned int PRESS_COUNT = BLINK::PERIOD / CYCLE::PERIOD - 2; // must be long enough to trigger, but short enough to avoid double trigger
+    static const unsigned int ACK_CHECK_PERIOD = 10;                           // ms
+    static const unsigned int ACK_TIMEOUT = 2 * PRESS_COUNT * CYCLE::PERIOD;   // ms
   };
 
 private:
   struct State
   {
-    uint16 waterTemp   = UNDEF::USHORT;
-    uint16 desiredTemp = UNDEF::USHORT;
-    uint16 ledStatus   = UNDEF::USHORT;
+    uint16_t waterTemp = UNDEF::USHORT;
+    uint16_t desiredTemp = UNDEF::USHORT;
+    uint16_t ledStatus = UNDEF::USHORT;
 
     bool buzzer = false;
-    uint16 error = 0;
+    uint16_t error = 0;
     unsigned int lastErrorChangeFrameCounter = 0;
 
     bool online = false;
@@ -239,27 +237,27 @@ private:
 
   struct IsrState
   {
-    uint16 latestWaterTemp    = UNDEF::USHORT;
-    uint16 latestBlinkingTemp = UNDEF::USHORT;
-    uint16 latestLedStatus    = UNDEF::USHORT;
-    uint8 latestTempUnit      = 0;
+    uint16_t latestWaterTemp = UNDEF::USHORT;
+    uint16_t latestBlinkingTemp = UNDEF::USHORT;
+    uint16_t latestLedStatus = UNDEF::USHORT;
+    uint8_t latestTempUnit = 0;
 
-    uint16 frameValue = 0;
-    uint16 receivedBits = 0;
+    uint16_t frameValue = 0;
+    uint16_t receivedBits = 0;
 
     unsigned int lastBlankDisplayFrameCounter = 0;
     unsigned int blankCounter = 0;
 
-    unsigned int stableDisplayValueCount     = CONFIRM_FRAMES::DISP;
-    unsigned int stableDisplayBlankCount     = CONFIRM_FRAMES::DISP;
-    unsigned int stableWaterTempCount        = CONFIRM_FRAMES::WATER_TEMP_ACT;
+    unsigned int stableDisplayValueCount = CONFIRM_FRAMES::DISP;
+    unsigned int stableDisplayBlankCount = CONFIRM_FRAMES::DISP;
+    unsigned int stableWaterTempCount = CONFIRM_FRAMES::WATER_TEMP_ACT;
     unsigned int stableBlinkingWaterTempCount = 0;
-    unsigned int stableLedStatusCount        = CONFIRM_FRAMES::LED;
+    unsigned int stableLedStatusCount = CONFIRM_FRAMES::LED;
 
-    uint16 displayValue       = UNDEF::USHORT;
-    uint16 latestDisplayValue = UNDEF::USHORT;
+    uint16_t displayValue = UNDEF::USHORT;
+    uint16_t latestDisplayValue = UNDEF::USHORT;
 
-    uint16 receivedDigits = 0;
+    uint16_t receivedDigits = 0;
 
     bool isDisplayBlinking = false;
 
@@ -268,47 +266,45 @@ private:
 
   struct Buttons
   {
-    unsigned int toggleBubble   = 0;
-    unsigned int toggleFilter   = 0;
-    unsigned int toggleHeater   = 0;
-    unsigned int togglePower    = 0;
-    unsigned int toggleTempUp   = 0;
+    unsigned int toggleBubble = 0;
+    unsigned int toggleFilter = 0;
+    unsigned int toggleHeater = 0;
+    unsigned int togglePower = 0;
+    unsigned int toggleTempUp = 0;
     unsigned int toggleTempDown = 0;
   };
 
 private:
   // ISR and ISR helper
-  static ICACHE_RAM_ATTR void clockRisingISR(void* arg);
-  static ICACHE_RAM_ATTR inline void decodeDisplay();
-  static ICACHE_RAM_ATTR inline void decodeLED();
-  static ICACHE_RAM_ATTR inline void decodeButton();
-/*
-  ICACHE_RAM_ATTR inline void decodeDisplay();
-  ICACHE_RAM_ATTR inline void decodeLED();
-  ICACHE_RAM_ATTR inline void decodeButton();
-*/
+  static IRAM_ATTR void clockRisingISR(void *arg);
+  static IRAM_ATTR inline void decodeDisplay();
+  static IRAM_ATTR inline void decodeLED();
+  static IRAM_ATTR inline void decodeButton();
+  /*
+    IRAM_ATTR inline void decodeDisplay();
+    IRAM_ATTR inline void decodeLED();
+    IRAM_ATTR inline void decodeButton();
+  */
 
 private:
   // ISR variables
   static volatile State state;
   static volatile IsrState isrState;
   static volatile Buttons buttons;
-/*
-  volatile State state;
-  volatile IsrState isrState;
-  volatile Buttons buttons;
- */
+  /*
+    volatile State state;
+    volatile IsrState isrState;
+    volatile Buttons buttons;
+   */
 
 private:
-  uint16 convertDisplayToCelsius(uint16 value) const;
+  uint16_t convertDisplayToCelsius(uint16_t value) const;
   bool waitBuzzerOff() const;
-  bool pressButton(volatile unsigned int& buttonPressCount);
+  bool pressButton(volatile unsigned int &buttonPressCount);
   bool changeWaterTemp(int up);
 
 private:
-  LANG language;
   unsigned long lastStateUpdateTime = 0;
 };
 
 #endif /* SBH20IO_H */
-
