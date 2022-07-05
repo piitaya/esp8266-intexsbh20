@@ -280,11 +280,6 @@ private:
   static IRAM_ATTR inline void decodeDisplay();
   static IRAM_ATTR inline void decodeLED();
   static IRAM_ATTR inline void decodeButton();
-  /*
-    IRAM_ATTR inline void decodeDisplay();
-    IRAM_ATTR inline void decodeLED();
-    IRAM_ATTR inline void decodeButton();
-  */
 
 private:
   // ISR variables

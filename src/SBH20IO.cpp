@@ -517,7 +517,7 @@ uint16_t SBH20IO::convertDisplayToCelsius(uint16_t value) const
   return (celsiusValue >= 0) && (celsiusValue <= 60) ? celsiusValue : UNDEF::USHORT;
 }
 
-ICACHE_RAM_ATTR void SBH20IO::clockRisingISR(void *arg)
+IRAM_ATTR void SBH20IO::clockRisingISR(void *arg)
 {
   bool data = !digitalRead(PIN::DATA);
   bool enable = digitalRead(PIN::LATCH) == LOW;
@@ -576,7 +576,7 @@ ICACHE_RAM_ATTR void SBH20IO::clockRisingISR(void *arg)
   }
 }
 
-ICACHE_RAM_ATTR inline void SBH20IO::decodeDisplay()
+IRAM_ATTR inline void SBH20IO::decodeDisplay()
 {
   uint8_t digit;
   switch (isrState.frameValue & FRAME_DIGIT::SEGMENTS)
@@ -823,7 +823,7 @@ ICACHE_RAM_ATTR inline void SBH20IO::decodeDisplay()
   // else not all digits set yet
 }
 
-ICACHE_RAM_ATTR inline void SBH20IO::decodeLED()
+IRAM_ATTR inline void SBH20IO::decodeLED()
 {
   if (isrState.frameValue == isrState.latestLedStatus)
   {
@@ -857,7 +857,7 @@ ICACHE_RAM_ATTR inline void SBH20IO::decodeLED()
   }
 }
 
-ICACHE_RAM_ATTR inline void SBH20IO::decodeButton()
+IRAM_ATTR inline void SBH20IO::decodeButton()
 {
   if (isrState.frameValue & FRAME_BUTTON::FILTER)
   {
