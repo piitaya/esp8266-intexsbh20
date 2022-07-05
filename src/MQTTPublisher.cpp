@@ -122,18 +122,18 @@ void MQTTPublisher::loop()
 
     if (poolIO.isOnline())
     {
-      publishIfDefined(MQTT_TOPIC::BUBBLE, poolIO.isBubbleOn(), SBH20IO::UNDEF::BOOL);
-      publishIfDefined(MQTT_TOPIC::FILTER, poolIO.isFilterOn(), SBH20IO::UNDEF::BOOL);
-      publishIfDefined(MQTT_TOPIC::POWER, poolIO.isPowerOn(), SBH20IO::UNDEF::BOOL);
+      publishIfDefined(MQTT_TOPIC::POOL_BUBBLE, poolIO.isBubbleOn(), SBH20IO::UNDEF::BOOL);
+      publishIfDefined(MQTT_TOPIC::POOL_FILTER, poolIO.isFilterOn(), SBH20IO::UNDEF::BOOL);
+      publishIfDefined(MQTT_TOPIC::POOL_POWER, poolIO.isPowerOn(), SBH20IO::UNDEF::BOOL);
 
       uint8_t b = poolIO.isHeaterOn();
       if (b != SBH20IO::UNDEF::BOOL)
       {
-        mqttClient.publish(MQTT_TOPIC::HEATER, b ? (poolIO.isHeaterStandby() ? "standby" : "on") : "off", retainAll);
+        mqttClient.publish(MQTT_TOPIC::POOL_HEATER, b ? (poolIO.isHeaterStandby() ? "standby" : "on") : "off", retainAll);
       }
 
-      publishIfDefined(MQTT_TOPIC::WATER_ACT, poolIO.getActWaterTempCelsius(), (int)SBH20IO::UNDEF::USHORT);
-      publishIfDefined(MQTT_TOPIC::WATER_SET, poolIO.getDesiredWaterTempCelsius(), (int)SBH20IO::UNDEF::USHORT);
+      publishIfDefined(MQTT_TOPIC::POOL_CURRENT_TEMPERATURE, poolIO.getActWaterTempCelsius(), (int)SBH20IO::UNDEF::USHORT);
+      publishIfDefined(MQTT_TOPIC::POOL_TARGET_TEMPERATURE, poolIO.getDesiredWaterTempCelsius(), (int)SBH20IO::UNDEF::USHORT);
 
 #ifdef SERIAL_DEBUG
       publishIfDefined("pool/telegram/led", poolIO.getRawLedValue(), SBH20IO::UNDEF::USHORT);
@@ -148,7 +148,7 @@ void MQTTPublisher::loop()
       {
         mqttClient.publish(MQTT_TOPIC::STATE, "error", retainAll, forcedStateUpdate);
       }
-      mqttClient.publish(MQTT_TOPIC::ERROR, poolIO.getErrorMessage(errorVal).c_str(), retainAll);
+      mqttClient.publish(MQTT_TOPIC::POOL_ERROR, poolIO.getErrorMessage(errorVal).c_str(), retainAll);
     }
     else
     {
@@ -161,10 +161,10 @@ void MQTTPublisher::loop()
       wifiStateUpdateTime = now;
 
       // get temperature of WiFi controller
-      publishTemp(MQTT_TOPIC::WIFI_TEMP, thermometer.getTemperature());
+      publishTemp(MQTT_TOPIC::BOARD_TEMPERATURE, thermometer.getTemperature());
 
       // get WiFi RSSI
-      publish(MQTT_TOPIC::RSSI, WiFi.RSSI());
+      publish(MQTT_TOPIC::WIFI_RSSI, WiFi.RSSI());
 
 #ifdef SERIAL_DEBUG
       publish("wifi/heap", ESP.getFreeHeap());

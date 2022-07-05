@@ -206,35 +206,35 @@ Prepare your MQTT server for a new device.
 
 **Published Topics**
 
-| Topic              |         Values         | Unit | Notes                                      |
-| ------------------ | :--------------------: | :--: | ------------------------------------------ |
-| pool/bubble        |        on\|off         |      |
-| pool/filter        |        on\|off         |      |
-| pool/heater        |    on\|standby\|off    |      |
-| pool/power         |        on\|off         |      |
-| pool/water/tempAct |          int           |  °C  |
-| pool/water/tempSet |          int           |  °C  |
-| pool/error         |         string         |      | error message (see manual) or empty        |
-| pool/model         |         string         |      | metadata                                   |
-| wifi/rssi          |          int           | dBm  |
-| wifi/state         | online\|offline\|error |      | last will topic, offline is retained value |
-| wifi/temp          |          int           |  °C  | inside temp of WiFi module case            |
-| wifi/version       |         string         |      | metadata                                   |
-| wifi/update        |         string         |      | status message                             |
+| Topic                          |         Values         | Unit | Notes                                      |
+| ------------------------------ | :--------------------: | :--: | ------------------------------------------ |
+| intex/state                    | online\|offline\|error |      | last will topic, offline is retained value |
+| intex/version                  |         string         |      | metadata                                   |
+| intex/model                    |         string         |      | metadata                                   |
+| intex/wifi/ip                  |         string         |      | IP if the WiFI module                      |
+| intex/wifi/rssi                |          int           | dBm  |
+| intex/board/temperature        |          int           |  °C  | inside temp of WiFi module case            |
+| intex/pool/bubble              |        on\|off         |      |
+| intex/pool/filter              |        on\|off         |      |
+| intex/pool/heater              |    on\|standby\|off    |      |
+| intex/pool/power               |        on\|off         |      |
+| intex/pool/current_temperature |          int           |  °C  |
+| intex/pool/target_temperature  |          int           |  °C  |
+| intex/pool/error               |         string         |      | error message (see manual) or empty        |
 
 The topics will be published once after the connection to the MQTT server is established and
-then only on change except for the topic _wifi/state_, with a change rate limit of 1 per
+then only on change except for the topic _intex/state_, with a change rate limit of 1 per
 second.
 
 **Subscribed Topics**
 
-| Topic                      | Values  | Unit | Notes |
-| -------------------------- | :-----: | :--: | ----- |
-| pool/command/bubble        | on\|off |      |
-| pool/command/filter        | on\|off |      |
-| pool/command/heater        | on\|off |      |
-| pool/command/power         | on\|off |      |
-| pool/command/water/tempSet |   int   |  °C  |
+| Topic                             | Values  | Unit | Notes |
+| --------------------------------- | :-----: | :--: | ----- |
+| intex/pool/bubble/set             | on\|off |      |
+| intex/pool/filter/set             | on\|off |      |
+| intex/pool/heater/set             | on\|off |      |
+| intex/pool/power/set              | on\|off |      |
+| intex/pool/target_temperature/set |   int   |  °C  |
 
 The _pool_ topics are equivalent to the buttons on the control panel of the SB-H20.
 Refer to the user manual for more details.

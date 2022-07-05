@@ -94,15 +94,15 @@ void setup()
 
       mqttClient.addMetadata(MQTT_TOPIC::MODEL, CONFIG::POOL_MODEL_NAME);
       mqttClient.addMetadata(MQTT_TOPIC::VERSION, CONFIG::WIFI_VERSION);
-      mqttClient.addSubscriber(MQTT_TOPIC::CMD_BUBBLE, [](bool b) -> void
+      mqttClient.addSubscriber(MQTT_TOPIC::POOL_BUBBLE_SET, [](bool b) -> void
                                { poolIO.setBubbleOn(b); });
-      mqttClient.addSubscriber(MQTT_TOPIC::CMD_FILTER, [](bool b) -> void
+      mqttClient.addSubscriber(MQTT_TOPIC::POOL_FILTER_SET, [](bool b) -> void
                                { poolIO.setFilterOn(b); });
-      mqttClient.addSubscriber(MQTT_TOPIC::CMD_HEATER, [](bool b) -> void
+      mqttClient.addSubscriber(MQTT_TOPIC::POOL_HEATER_SET, [](bool b) -> void
                                { poolIO.setHeaterOn(b); });
-      mqttClient.addSubscriber(MQTT_TOPIC::CMD_POWER, [](bool b) -> void
+      mqttClient.addSubscriber(MQTT_TOPIC::POOL_POWER_SET, [](bool b) -> void
                                { poolIO.setPowerOn(b); });
-      mqttClient.addSubscriber(MQTT_TOPIC::CMD_WATER, [](int i) -> void
+      mqttClient.addSubscriber(MQTT_TOPIC::POOL_TARGET_TEMPERATURE_SET, [](int i) -> void
                                { poolIO.setDesiredWaterTempCelsius(i); });
 
       mqttClient.setup(config.get(CONFIG_TAG::MQTT_SERVER), config.get(CONFIG_TAG::MQTT_USER), config.get(CONFIG_TAG::MQTT_PASSWORD), CONFIG::POOL_MODEL_NAME, MQTT_TOPIC::STATE, "offline");
@@ -146,7 +146,7 @@ void loop()
     if (!initialized)
     {
       // publish client IP address
-      mqttClient.addMetadata(MQTT_TOPIC::IP, WiFi.localIP().toString().c_str());
+      mqttClient.addMetadata(MQTT_TOPIC::WIFI_IP, WiFi.localIP().toString().c_str());
 
       // init whirlpool I/O after first WiFi connect
       poolIO.setup();

@@ -65,26 +65,26 @@ namespace CONFIG_TAG
 namespace MQTT_TOPIC
 {
   // publish
-  const char BUBBLE[] = "pool/bubble";
-  const char ERROR[] = "pool/error";
-  const char FILTER[] = "pool/filter";
-  const char HEATER[] = "pool/heater";
-  const char MODEL[] = "pool/model";
-  const char POWER[] = "pool/power";
-  const char WATER_ACT[] = "pool/water/tempAct";
-  const char WATER_SET[] = "pool/water/tempSet";
-  const char VERSION[] = "wifi/version";
-  const char IP[] = "wifi/ip";
-  const char RSSI[] = "wifi/rssi";
-  const char WIFI_TEMP[] = "wifi/temp";
-  const char STATE[] = "wifi/state";
+  const char STATE[] = "intex/state";
+  const char MODEL[] = "intex/model";
+  const char VERSION[] = "intex/version";
+  const char WIFI_IP[] = "intex/wifi/ip";
+  const char WIFI_RSSI[] = "intex/wifi/rssi";
+  const char BOARD_TEMPERATURE[] = "intex/board/temperature";
+  const char POOL_BUBBLE[] = "intex/pool/bubble";
+  const char POOL_ERROR[] = "intex/pool/error";
+  const char POOL_FILTER[] = "intex/pool/filter";
+  const char POOL_HEATER[] = "intex/pool/heater";
+  const char POOL_POWER[] = "intex/pool/power";
+  const char POOL_CURRENT_TEMPERATURE[] = "intex/pool/current_temperature";
+  const char POOL_TARGET_TEMPERATURE[] = "intex/pool/target_temperature";
 
   // subscribe
-  const char CMD_BUBBLE[] = "pool/command/bubble";
-  const char CMD_FILTER[] = "pool/command/filter";
-  const char CMD_HEATER[] = "pool/command/heater";
-  const char CMD_POWER[] = "pool/command/power";
-  const char CMD_WATER[] = "pool/command/water/tempSet";
+  const char POOL_BUBBLE_SET[] = "intex/pool/bubble/set";
+  const char POOL_FILTER_SET[] = "intex/pool/filter/set";
+  const char POOL_HEATER_SET[] = "intex/pool/heater/set";
+  const char POOL_POWER_SET[] = "intex/pool/power/set";
+  const char POOL_TARGET_TEMPERATURE_SET[] = "intex/pool/target_temperature/set";
 }
 
 // ESP8266 pins
