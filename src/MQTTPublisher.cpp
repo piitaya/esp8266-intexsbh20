@@ -136,7 +136,7 @@ void MQTTPublisher::loop()
       publishIfDefined(MQTT_TOPIC::POOL_TARGET_TEMPERATURE, poolIO.getDesiredWaterTempCelsius(), (int)SBH20IO::UNDEF::USHORT);
 
 #ifdef SERIAL_DEBUG
-      publishIfDefined("pool/telegram/led", poolIO.getRawLedValue(), SBH20IO::UNDEF::USHORT);
+      publishIfDefined(MQTT_TOPIC::DEBUG_LED, poolIO.getRawLedValue(), SBH20IO::UNDEF::USHORT);
 #endif
 
       unsigned int errorVal = poolIO.getErrorValue();
@@ -167,7 +167,7 @@ void MQTTPublisher::loop()
       publish(MQTT_TOPIC::WIFI_RSSI, WiFi.RSSI());
 
 #ifdef SERIAL_DEBUG
-      publish("wifi/heap", ESP.getFreeHeap());
+      publish(MQTT_TOPIC::DEBUG_HEAP, ESP.getFreeHeap());
 #endif
     }
   }

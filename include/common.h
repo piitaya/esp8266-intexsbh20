@@ -78,6 +78,8 @@ namespace MQTT_TOPIC
   const char POOL_POWER[] = "intex/pool/power";
   const char POOL_CURRENT_TEMPERATURE[] = "intex/pool/current_temperature";
   const char POOL_TARGET_TEMPERATURE[] = "intex/pool/target_temperature";
+  const char DEBUG_LED[] = "intex/debug/led";
+  const char DEBUG_HEAP[] = "intex/debug/heap";
 
   // subscribe
   const char POOL_BUBBLE_SET[] = "intex/pool/bubble/set";
